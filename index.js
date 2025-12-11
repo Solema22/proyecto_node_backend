@@ -1,45 +1,62 @@
 import express from "express";
 import cors from "cors";
-import bodyParser from "body-parser";
-import dotenv from "dotenv";
+import { configDotenv } from "dotenv";
 
-import productsRouter from "./src/router/products.routes.js";
-import authRouter from "./src/router/auth.router.js";
+import rutasLog from "./src/routes/auth.routes.js";
+import rutasProducts from "./src/routes/products.routes.js";
 
-dotenv.config();
+// Cargar variables del .env
+configDotenv();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(bodyParser.json());
+// CONFIGURACIÓN CORS 
+const corsConfig = {
+    origin: ["http://localhost:5173", "https://midominio.com"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Content-Length"],
+    credentials: true,
+    maxAge: 600,
+    optionsSuccessStatus: 204
+};
 
-// Rutas principales
-app.use("/api/products", productsRouter);
-app.use("/auth", authRouter);
+app.use(cors(corsConfig));
+app.use(express.json());
 
-// Ruta de prueba
-app.get("/", (req, res) => {
-  res.send("API Proyecto Final funcionando correctamente 🚀");
+// RUTAS NO PROTEGIDAS
+app.use("/api", rutasLog); // login
+
+
+app.use((req, res, next) => {
+    console.log(`Datos received at: ${req.method} ${req.url}`);
+    next();
 });
 
-// Error 404
+
+app.use("/api/products", rutasProducts);
+
+// RUTA 404
 app.use((req, res) => {
-  res.status(404).json({
-    status: 404,
-    message: "Ruta no encontrada o inválida",
-  });
+    res.status(404).send("Recurso no encontrado o ruta inválida");
 });
 
-// Error 500
+
 app.use((err, req, res, next) => {
-  console.error("Error interno:", err);
-  res.status(500).json({
-    status: 500,
-    message: "Error interno del servidor",
-  });
+    console.error(" ERROR INTERNO:", err.message);
+    res.status(500).json({
+        message: "Error interno del servidor",
+        error: err.message
+    });
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor escuchando en http://localhost:${PORT}`);
-});
+// NECESARIO PARA VERCEL 
+if (process.env.NODE_ENV !== "production") {
+    app.listen(PORT, () => {
+        console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    });
+}
+
+//  ESTO ES OBLIGATORIO PARA VERCEL
+export default app;
