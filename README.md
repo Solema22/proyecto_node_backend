@@ -8,15 +8,23 @@ Permite hacer login y manejar productos (listar, crear y eliminar).
 
 proyecto_node_backend/
 ├── src/
-│   ├── routes/
-│   ├── controllers/
-│   ├── services/
-│   ├── models/
-│   └── config/
+│ ├── routes/
+│ │ ├── auth.routes.js
+│ │ └── products.routes.js
+│ ├── controllers/
+│ │ ├── auth.controller.js
+│ │ └── products.controller.js
+│ ├── services/
+│ │ ├── auth.service.js
+│ │ └── products.service.js
+│ ├── models/
+│ │ └── products.model.js
+│ └── config/
+│ └── firebase.js
 ├── index.js
 ├── package.json
 ├── vercel.json
-└── .env (no se sube)
+└── .env (no se sube al repositorio)
 
 
 Tecnologías usadas
@@ -34,7 +42,7 @@ Tecnologías usadas
 °dotenv
 
 
-***Archivo .env***
+Archivo .env
 
 El .env guarda las claves de Firebase y la clave del JWT:
 
@@ -46,7 +54,7 @@ JWT_SECRET=...
 
 
 
-****Cómo usar el proyecto****
+Cómo usar el proyecto
 
 1°   Clonar el repositorio:
 git clone https://github.com/Solema22/proyecto_node_backend.git
@@ -64,7 +72,7 @@ npm start
 
 http://localhost:3000
 
-****Endpoints (probados con Postman)***
+Endpoints (probados con Postman)
 (Login)
 
 POST /api/login
@@ -74,10 +82,10 @@ Body:
   "email": "test@test.com",
   "password": "123456"
 }
-**** ESTO TE DEVUELVE UN TOKEN ***
+ (ESTO TE DEVUELVE UN TOKEN )
 
 
-***Productos***
+Productos
 
 OBTENER TODO LOS PRODUCTOS 
 
